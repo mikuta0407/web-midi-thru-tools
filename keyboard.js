@@ -6,27 +6,64 @@ var midiout = null;
 var midiin = null;
 var velocity = 0;
 var isMidiMute = false;
+var isVelFix = false;
 
+var key = 0; //mikuta0407 created
+
+var keyarr =["C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C"];
+
+//mikuta0407 edited
 function inputEvent(e) {
+    //console.log("a");
     var target = e.target;
     var device = midiDevices.inputs[target.name];
+    
+    var numArray = [];
     var numArray = [];
 
     if (device != midiin)
     {
+        console.log("not selected");
         return; /* not selected device. throw away data  */
     }
 
     // to hex
     event.data.forEach(function (val) {
-        numArray.push(('00' + val.toString(16)).substr(-2));
+        //console.log(val);
+        numArray.push(val);
     });
 
-    if (isMidiMute =! true)
-    {
-        // output to midi sequencer
-        document.getElementById("synth").send(numArray);
+    /*
+    Send([Status Byte(128,144,176,etc...), Data Byte 1(Pitch, etc...), Data Byte 2(Velocity, value, etc...)]);
+    */
+
+    //CC
+    if (numArray[0] == 176) {
+        Send([176, document.getElementById("ccmode").value, numArray[2]]);
+
+
+    //Note
+    } else {
+        //Fix Velocity
+        if (isVelFix){
+            numArray[2] = velocity;
+        }
+    
+        //Transpose
+        numArray[1] += key;
+    
+        if (isMidiMute != true)
+        {
+            console.log("selected");
+            // output to midi sequencer
+            //document.getElementById("synth").send(numArray);
+            console.log(numArray);
+
+            //Midi out
+            Send([numArray[0], numArray[1], numArray[2]]);
+        }
     }
+
     // output monitor
     in_inputMonitor(numArray);
 }
@@ -46,6 +83,8 @@ function scb(midiaccess) {
         value.addEventListener('midimessage', inputEvent, false);
         midiin = midiDevices.inputs[value.name];
     }
+    console.log("init");
+    console.log(midiin);
     
 
     var i = 0;
@@ -87,15 +126,28 @@ function Init() {
     document.getElementById("inputMIDIMuteToggle").addEventListener("change", function (e) {
         isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").value);
     });
+
+    document.getElementById("inputVelocityFixToggle").addEventListener("change", function (e) {
+        isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").value);
+    });
+
     document.getElementById("velocityNum").addEventListener("change", function (e) {
         velocity = parseInt(document.getElementById("velocityNum").value);
     });
     document.getElementById("keyboard").addEventListener("change", function (e) {
+        e.note[1] += key; //スクリーンキーボード用トランスポーズ
+        console.log(e.note);
+        //0: NoteOn/NoteOff 1: Note
         Send([0x90, e.note[1], e.note[0] ? velocity : 0]);
     });
-    document.getElementById("prog").addEventListener("change", function (e) {
-        Send([0xc0, e.target.value]);
+    //document.getElementById("prog").addEventListener("change", function (e) {
+    //    Send([0xc0, e.target.value]);
+    //});
+
+    document.getElementById("progselector").addEventListener("change", function (e) {
+        Send([0xc0, document.getElementById("progselector").value - 1]);
     });
+
     document.getElementById("volume").addEventListener("change", function (e) {
         Send([0xb0, 7, e.target.value]);
     });
@@ -126,6 +178,8 @@ function out_outputMonitor(mess) {
 }
 
 function Send(mess) {
+
+    console.log(mess);
    
     // output to midi device
     if(midiout)
@@ -149,4 +203,25 @@ function sendSysEx()
     }
 
     Send(inputNumArray);
+}
+
+//mikuta0407 created
+function transpose(keyfrombutton)
+{
+    key = keyfrombutton;
+    document.getElementById("nowkey").innerHTML = "Now key : " + key + ", " + keyarr[key + 12];
+}
+
+//mikuta0407 created
+function gmsystemon(){
+    Send([0xF0,0x7E,0x7F,0x09,0x01,0xF7]);
+}
+
+//mikuta0407 created
+function gsreset(){
+    Send([0xF0,0x41,0x10,0x42,0x12,0x40,0x00,0x7F,0x00,0x41,0xF7])
+}
+
+function xgsystemon(){
+    Send([0xF0,0x43,0x10,0x4C,0x00,0x00,0x7E,0x00,0xF7]);
 }
