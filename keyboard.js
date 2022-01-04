@@ -14,13 +14,13 @@ var keyarr =["C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭"
 
 //mikuta0407 edited
 function inputEvent(e) {
-    //console.log("a");
+
     var target = e.target;
+    
     var device = midiDevices.inputs[target.name];
     
     var numArray = [];
-    var numArray = [];
-
+    
     if (device != midiin)
     {
         console.log("not selected");
@@ -29,7 +29,6 @@ function inputEvent(e) {
 
     // to hex
     event.data.forEach(function (val) {
-        //console.log(val);
         numArray.push(val);
     });
 
@@ -54,10 +53,10 @@ function inputEvent(e) {
     
         if (isMidiMute != true)
         {
-            console.log("selected");
+            //console.log("selected");
             // output to midi sequencer
             //document.getElementById("synth").send(numArray);
-            console.log(numArray);
+            //console.log(numArray);
 
             //Midi out
             Send([numArray[0], numArray[1], numArray[2]]);
@@ -69,7 +68,7 @@ function inputEvent(e) {
 }
 
 function ecb(e) {
-    console.log(e);
+    //console.log(e);
 }
 
 function scb(midiaccess) {
@@ -83,8 +82,8 @@ function scb(midiaccess) {
         value.addEventListener('midimessage', inputEvent, false);
         midiin = midiDevices.inputs[value.name];
     }
-    console.log("init");
-    console.log(midiin);
+    //console.log("init");
+    //console.log(midiin);
     
 
     var i = 0;
@@ -115,13 +114,16 @@ function Init() {
         var obj = document.getElementById("midiout");
         var idx = obj.selectedIndex;
         var val = obj.options[idx].value;
-        midiout = midiDevices.outputs[val.name];
+        midiout = midiDevices.outputs[val];
+        //console.log(midiDevices.outputs);
+        //console.log(val);
     });
     document.getElementById("midiin").addEventListener("change", function (e) {
         var obj = document.getElementById("midiin");
         var idx = obj.selectedIndex;
         var val = obj.options[idx].value;
-        midiin = midiDevices.inputs[val.name];
+        midiin = midiDevices.inputs[val];
+        //console.log(midiin);
     });
     document.getElementById("inputMIDIMuteToggle").addEventListener("change", function (e) {
         isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").value);
@@ -136,7 +138,7 @@ function Init() {
     });
     document.getElementById("keyboard").addEventListener("change", function (e) {
         e.note[1] += key; //スクリーンキーボード用トランスポーズ
-        console.log(e.note);
+        //console.log(e.note);
         //0: NoteOn/NoteOff 1: Note
         Send([0x90, e.note[1], e.note[0] ? velocity : 0]);
     });
@@ -179,7 +181,7 @@ function out_outputMonitor(mess) {
 
 function Send(mess) {
 
-    console.log(mess);
+    //console.log(mess);
    
     // output to midi device
     if(midiout)
