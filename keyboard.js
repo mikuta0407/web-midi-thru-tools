@@ -211,7 +211,7 @@ function sendSysEx()
 function transpose(keyfrombutton)
 {
     key = keyfrombutton;
-    document.getElementById("nowkey").innerHTML = "Now key : " + key + ", " + keyarr[key + 12];
+    document.getElementById("nowkey").innerHTML = "Now key : <b>" + key + ", " + keyarr[key + 12]+"</b>";
 }
 
 //mikuta0407 created
