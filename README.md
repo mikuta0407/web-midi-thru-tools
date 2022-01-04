@@ -37,7 +37,7 @@ The following functions are available
 
 The basic MIDI sending and receiving parts are used from the original program.
 
-![](https://cdn.discordapp.com/attachments/925382779653480480/927915598162296842/unknown.png)
+![](https://cdn.discordapp.com/attachments/925382779653480480/927917933685010504/unknown.png)
 
 ## 使い方/How to use
 
