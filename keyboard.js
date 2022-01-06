@@ -7,6 +7,7 @@ var midiin = null;
 var velocity = 0;
 var isMidiMute = false;
 var isVelFix = false;
+var isChCovnert = false;
 
 var key = 0; //mikuta0407 created
 
@@ -18,7 +19,8 @@ function inputEvent(e) {
     var target = e.target;
     
     var device = midiDevices.inputs[target.name];
-    
+
+       
     var numArray = [];
     
     if (device != midiin)
@@ -32,6 +34,9 @@ function inputEvent(e) {
         numArray.push(val);
     });
 
+    console.log(device);
+    console.log(midiin);
+
     /*
     Send([Status Byte(128,144,176,etc...), Data Byte 1(Pitch, etc...), Data Byte 2(Velocity, value, etc...)]);
     */
@@ -43,20 +48,33 @@ function inputEvent(e) {
 
     //Note
     } else {
-        //Fix Velocity
-        if (isVelFix){
-            numArray[2] = velocity;
+        //Channel
+        if (isChCovnert){
+            //Off: 128~143
+            if (numArray[0] <= 143){
+                numArray[0] = 128 + parseInt(document.getElementById("chconvertto").value);
+            }
+            //On: 144~159
+            else {
+                numArray[0] = 144 + parseInt(document.getElementById("chconvertto").value);
+            }
         }
     
         //Transpose
         numArray[1] += key;
+
+        //Fix Velocity
+        if (isVelFix){
+            numArray[2] = velocity;
+        }
+        
     
         if (isMidiMute != true)
         {
             //console.log("selected");
             // output to midi sequencer
             //document.getElementById("synth").send(numArray);
-            //console.log(numArray);
+            console.log(numArray);
 
             //Midi out
             Send([numArray[0], numArray[1], numArray[2]]);
@@ -131,6 +149,10 @@ function Init() {
 
     document.getElementById("inputVelocityFixToggle").addEventListener("change", function (e) {
         isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").value);
+    });
+
+    document.getElementById("chconvert").addEventListener("change", function (e) {
+        isChCovnert = Boolean(document.getElementById("chconvert").value);
     });
 
     document.getElementById("velocityNum").addEventListener("change", function (e) {
