@@ -215,7 +215,7 @@ function transpose(keyfrombutton)
 }
 
 //mikuta0407 created
-function gmsystemon(){
+function gm1systemon(){
     Send([0xF0,0x7E,0x7F,0x09,0x01,0xF7]);
 }
 
