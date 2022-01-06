@@ -6,6 +6,7 @@ MIDI THRUではありますが、信号の加工を搭載している関係で�
 
 トランスポーズを搭載していないキーボードやMIDI楽器でトランスポーズを実現するために作りました。
 
+- チャンネル変換(任意のChから任意のChへ)
 - Program Changeの送信(音色変更)
 - Volume変更
 - Velocity固定化
@@ -28,6 +29,7 @@ I made this application to realize transposition on keyboards and MIDI instrumen
 
 The following functions are available
 
+- Channel Convert
 - Sending Program Change (Tone Change)
 - Change Volume
 - Fixing Velocity
