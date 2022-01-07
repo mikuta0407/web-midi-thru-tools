@@ -52,6 +52,7 @@ function inputEvent(e) {
     //Note
     } else {
         //Channel
+        console.log(isChCovnert);
         if (isChCovnert){
             //Off: 128~143
             if (numArray[0] <= 143){
@@ -155,7 +156,7 @@ function Init() {
     });
 
     document.getElementById("chconvert").addEventListener("change", function (e) {
-        isChCovnert = Boolean(document.getElementById("chconvert").value);
+        isChCovnert = Boolean(document.getElementById("chconvert").checked);
     });
 
     document.getElementById("velocityNum").addEventListener("change", function (e) {
@@ -172,7 +173,11 @@ function Init() {
     //});
 
     document.getElementById("progselector").addEventListener("change", function (e) {
-        Send([0xc0, document.getElementById("progselector").value - 1]);
+
+        if (isChCovnert){
+            var ch = 192 + parseInt(document.getElementById("chconvertto").value);
+        }
+        Send([ch, document.getElementById("progselector").value - 1]);
     });
 
     document.getElementById("volume").addEventListener("change", function (e) {
