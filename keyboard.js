@@ -176,6 +176,8 @@ function Init() {
 
         if (isChCovnert){
             var ch = 192 + parseInt(document.getElementById("chconvertto").value);
+        } else {
+            var ch = 192;
         }
         Send([ch, document.getElementById("progselector").value - 1]);
     });
