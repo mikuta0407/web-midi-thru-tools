@@ -43,7 +43,10 @@ function inputEvent(e) {
 
     //CC
     if (numArray[0] == 176) {
-        Send([176, document.getElementById("ccmode").value, numArray[2]]);
+        if (isChCovnert){
+            numArray[0] = 176 + parseInt(document.getElementById("chconvertto").value);
+        }
+        Send([numArray[0], document.getElementById("ccmode").value, numArray[2]]);
 
 
     //Note
