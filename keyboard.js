@@ -8,6 +8,7 @@ var velocity = 0;
 var isMidiMute = false;
 var isVelFix = false;
 var isChCovnert = false;
+var isSendCC = true;
 
 var key = 0; //mikuta0407 created
 
@@ -34,20 +35,21 @@ function inputEvent(e) {
         numArray.push(val);
     });
 
-    console.log(device);
-    console.log(midiin);
+    //console.log(device);
+    //console.log(midiin);
 
     /*
     Send([Status Byte(128,144,176,etc...), Data Byte 1(Pitch, etc...), Data Byte 2(Velocity, value, etc...)]);
     */
 
     //CC
-    if (numArray[0] == 176) {
-        if (isChCovnert){
-            numArray[0] = 176 + parseInt(document.getElementById("chconvertto").value);
+    if (numArray[0] >= 176) {
+        if (isSendCC) {
+            if (isChCovnert){
+                numArray[0] = 176 + parseInt(document.getElementById("chconvertto").value);
+            }
+            Send([numArray[0], document.getElementById("ccmode").value, numArray[2]]);
         }
-        Send([numArray[0], document.getElementById("ccmode").value, numArray[2]]);
-
 
     //Note
     } else {
@@ -157,6 +159,10 @@ function Init() {
 
     document.getElementById("chconvert").addEventListener("change", function (e) {
         isChCovnert = Boolean(document.getElementById("chconvert").checked);
+    });
+
+    document.getElementById("sendcc").addEventListener("change", function (e) {
+        isSendCC = Boolean(document.getElementById("chconvert").checked);
     });
 
     document.getElementById("velocityNum").addEventListener("change", function (e) {
