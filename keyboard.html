@@ -249,8 +249,8 @@
 	<br>If you are not using Channel Convert, it will be sent to Ch01
 	<br><br>
 	
-	Volume : <webaudio-knob id="volume" min="0" max="127" value="100" diameter="40"></webaudio-knob><br/><br/>
-	Velocity : <input id="velocityNum" type="number" name="velocity" value="64" min="1" max="100"> Velocity Fix : <input type="checkbox" id="inputVelocityFixToggle"><br /><br /><br />
+	Volume : <input id="volume" type="number" name="volume" value="127" min="0" max="127"><br>
+	Velocity : <input id="velocityNum" type="number" name="velocity" value="64" min="0" max="127"> Velocity Fix : <input type="checkbox" id="inputVelocityFixToggle"><br /><br /><br />
 
 	CC Mode: 
 	<select name="CC Mode" id="ccmode">
@@ -277,6 +277,8 @@
 		<option value="126">126 Mono on/Poly off</option>
 		<option value="127">127 Poly on/Mono off</option>
 	</select>
+
+	CC Mode Fix : <input type="checkbox" id="ccModeFixToggle">
 
 	<br /><br />
 

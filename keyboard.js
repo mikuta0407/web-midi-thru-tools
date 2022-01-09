@@ -9,9 +9,12 @@ var isMidiMute = false;
 var isVelFix = false;
 var isChCovnert = false;
 var isSendCC = true;
+var isCCFix = false;
+var ccmode = 7;
 
 var key = 0; //mikuta0407 created
 var oct = 0;
+var ch = 0;
 
 var scrkey = true;
 
@@ -27,9 +30,6 @@ function inputEvent(e) {
        
     var numArray = [];  
     
-    //console.log(device);
-    //console.log(midiin);
-
     if (device != midiin)
     {
         console.log("not selected");
@@ -43,42 +43,42 @@ function inputEvent(e) {
         numArray.push(val);
     });
 
-    //console.log(device);
-    //console.log(midiin);
-
     /*
     Send([Status Byte(128,144,176,etc...), Data Byte 1(Pitch, etc...), Data Byte 2(Velocity, value, etc...)]);
     */
 
+    console.log("In: " + numArray[0] +", "+ numArray[1] +", "+ numArray[2]);
     //CC
     if (numArray[0] >= 176) {
         if (isSendCC) {
             if (isChCovnert){
-                numArray[0] = 176 + parseInt(document.getElementById("chconvertto").value);
+                numArray[0] = 176 + ch;
             }
-            Send([numArray[0], document.getElementById("ccmode").value, numArray[2]]);
+
+            if (isCCFix){
+                numArray[1] = ccmode
+            }
+
+
+            Send(numArray);
         }
 
     //Note
     } else {
         //Channel
-        console.log(isChCovnert);
         if (isChCovnert){
             //Off: 128~143
             if (numArray[0] <= 143){
-                numArray[0] = 128 + parseInt(document.getElementById("chconvertto").value);
+                numArray[0] = 128 + ch;
             }
             //On: 144~159
             else {
-                numArray[0] = 144 + parseInt(document.getElementById("chconvertto").value);
+                numArray[0] = 144 + ch;
             }
         }
     
         //Octave + Transpose
         numArray[1] += oct * 12 + key;
-
-        //Transpose
-        //numArray[1] += key;
 
         //Fix Velocity
         if (isVelFix){
@@ -88,15 +88,17 @@ function inputEvent(e) {
     
         if (isMidiMute != true)
         {
-            //console.log("selected");
             // output to midi sequencer
-            //document.getElementById("synth").send(numArray);
-            console.log(numArray);
+            if (scrkey){
+                console.log(numArray);
+            }
 
             //Midi out
-            Send([numArray[0], numArray[1], numArray[2]]);
+            Send(numArray);
         }
     }
+
+    console.log("Out: " + numArray[0] +", "+ numArray[1] +", "+ numArray[2]);
 
     // output monitor
     in_inputMonitor(numArray);
@@ -180,8 +182,16 @@ function Init(mode) {
         isChCovnert = Boolean(document.getElementById("chconvert").checked);
     });
 
+    document.getElementById("chconvertto").addEventListener("change",function (e) {
+        ch = parseInt(document.getElementById("chconvertto").value);
+    });
+
     document.getElementById("sendcc").addEventListener("change", function (e) {
-        isSendCC = Boolean(document.getElementById("chconvert").checked);
+        isSendCC = Boolean(document.getElementById("sendcc").checked);
+    });
+
+    document.getElementById("ccModeFixToggle").addEventListener("change", function (e) {
+        isCCFix = Boolean(document.getElementById("ccModeFixToggle").checked);
     });
 
     document.getElementById("velocityNum").addEventListener("change", function (e) {
@@ -193,10 +203,6 @@ function Init(mode) {
             
             e.note[1] += key; //スクリーンキーボード用トランスポーズ
 
-            var ch = 0
-            if (isChCovnert){
-                ch = parseInt(document.getElementById("chconvertto").value);
-            }
             //console.log(e.note);
             //0: NoteOn/NoteOff 1: Note
             
@@ -207,7 +213,7 @@ function Init(mode) {
     document.getElementById("progselector").addEventListener("change", function (e) {
 
         if (isChCovnert){
-            var ch = 192 + parseInt(document.getElementById("chconvertto").value);
+            var ch = 192 + ch;
         } else {
             var ch = 192;
         }
@@ -221,20 +227,22 @@ function Init(mode) {
 
     //初期化
 
-    setTimeout( variable_refresh(), 100 );
+    setTimeout( variable_refresh(true), 100 );
     
 }
 
-function variable_refresh() {
+function variable_refresh(initialize = false) {
     //MIDI OUT
-    document.getElementById("midiout").options[0].selected = true;
+    if (initialize){
+        document.getElementById("midiout").options[0].selected = true;
+        document.getElementById("midiin").options[0].selected = true;
+    }
     var obj = document.getElementById("midiout");
     var idx = obj.selectedIndex;
     var val = obj.options[idx].value;
     midiout = midiDevices.outputs[val];
 
     //MIDI IN
-    document.getElementById("midiin").options[0].selected = true;
     var obj = document.getElementById("midiin");
     var idx = obj.selectedIndex;
     var val = obj.options[idx].value;
@@ -243,8 +251,10 @@ function variable_refresh() {
     isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").checked);
     isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").checked);
     isChCovnert = Boolean(document.getElementById("chconvert").checked);
-    isSendCC = Boolean(document.getElementById("chconvert").checked);
+    isSendCC = Boolean(document.getElementById("sendcc").checked);
+    isCCFix = Boolean(document.getElementById("ccModeFixToggle").checked);
     velocity = parseInt(document.getElementById("velocityNum").value);
+    ccmode = parseInt(document.getElementById("ccmode").value)
     console.log('Initialized!');
 }
 
