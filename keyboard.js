@@ -11,6 +11,7 @@ var isChCovnert = false;
 var isSendCC = true;
 
 var key = 0; //mikuta0407 created
+var oct = 0;
 
 var keyarr =["C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C"]; //mikuta0407 created
 
@@ -66,8 +67,11 @@ function inputEvent(e) {
             }
         }
     
+        //Octave + Transpose
+        numArray[1] += oct * 12 + key;
+
         //Transpose
-        numArray[1] += key;
+        //numArray[1] += key;
 
         //Fix Velocity
         if (isVelFix){
@@ -150,11 +154,11 @@ function Init() {
         //console.log(midiin);
     });
     document.getElementById("inputMIDIMuteToggle").addEventListener("change", function (e) {
-        isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").value);
+        isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").checked);
     });
 
     document.getElementById("inputVelocityFixToggle").addEventListener("change", function (e) {
-        isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").value);
+        isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").checked);
     });
 
     document.getElementById("chconvert").addEventListener("change", function (e) {
@@ -250,6 +254,15 @@ function transpose(keyfrombutton)
 {
     key = keyfrombutton;
     document.getElementById("nowkey").innerHTML = "Now key : <b>" + key + ", " + keyarr[key + 12]+"</b>";
+}
+
+function octave(octfrombutton){
+    if (octfrombutton == 0){
+        oct = 0;
+    } else {
+        oct += parseInt(octfrombutton);
+    }
+    document.getElementById("nowoctave").innerHTML = `Now oct : <b>${oct}</b>`;
 }
 
 //mikuta0407 created

@@ -80,7 +80,7 @@
     <br />
 	MidiIn : <select id="midiin"><option>none</option></select>
 	MidiOut : <select id="midiout"><option>none</option></select><br/>
-	MidiIn mute : <webaudio-switch id="inputMIDIMuteToggle"></webaudio-switch><br />
+	MidiIn mute : <input type="checkbox" id="inputMIDIMuteToggle"><br />
 
 	<br>
 	Channel Convert to : 
@@ -247,7 +247,7 @@
 	<br><br>
 	
 	Volume : <webaudio-knob id="volume" min="0" max="127" value="100" diameter="40"></webaudio-knob><br/><br/>
-	Velocity : <input id="velocityNum" type="number" name="velocity" value="64" min="1" max="100"> Velocity Fix : <webaudio-switch id="inputVelocityFixToggle"></webaudio-switch><br /><br /><br />
+	Velocity : <input id="velocityNum" type="number" name="velocity" value="64" min="1" max="100"> Velocity Fix : <input type="checkbox" id="inputVelocityFixToggle"><br /><br /><br />
 
 	CC Mode: 
 	<select name="CC Mode" id="ccmode">
@@ -276,6 +276,17 @@
 	</select>
 
 	<br /><br />
+
+	Octave<br />
+
+	<div id="nowoctave">Now oct : <b>0</b></div>
+
+	<div>
+		<button onclick="octave(-1)" class="key-minus">-</button> 
+		<button onclick="octave(0)" class="key-zero">0</button> 
+		<button onclick="octave(1)" class="key-plus">+</button> 
+	</div>
+
 	Transpose<br />
 
 	<div id="nowkey">Now key : <b>0, C</b></div>
