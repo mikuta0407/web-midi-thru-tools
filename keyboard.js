@@ -126,7 +126,9 @@ function scb(midiaccess) {
     
 }
 
-function Init() {
+function Init(mode) {
+
+    console.log("Hello");
 
     if (navigator.requestMIDIAccess) {
         navigator.requestMIDIAccess({
@@ -172,12 +174,16 @@ function Init() {
     document.getElementById("velocityNum").addEventListener("change", function (e) {
         velocity = parseInt(document.getElementById("velocityNum").value);
     });
-    document.getElementById("keyboard").addEventListener("change", function (e) {
-        e.note[1] += key; //スクリーンキーボード用トランスポーズ
-        //console.log(e.note);
-        //0: NoteOn/NoteOff 1: Note
-        Send([0x90, e.note[1], e.note[0] ? velocity : 0]);
-    });
+
+    if (mode == "keyboard"){
+        document.getElementById("keyboard").addEventListener("change", function (e) {
+            e.note[1] += key; //スクリーンキーボード用トランスポーズ
+            //console.log(e.note);
+            //0: NoteOn/NoteOff 1: Note
+            Send([0x90, e.note[1], e.note[0] ? velocity : 0]);
+        });
+    }
+    
     //document.getElementById("prog").addEventListener("change", function (e) {
     //    Send([0xc0, e.target.value]);
     //});
