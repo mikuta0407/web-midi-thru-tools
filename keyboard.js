@@ -27,14 +27,16 @@ function inputEvent(e) {
        
     var numArray = [];  
     
+    //console.log(device);
+    //console.log(midiin);
+
     if (device != midiin)
     {
         console.log("not selected");
         return; /* not selected device. throw away data  */
     }
 
-    //console.log(device);
-    //console.log(midiin);
+    
 
     // to hex
     event.data.forEach(function (val) {
@@ -188,10 +190,17 @@ function Init(mode) {
 
     if (scrkey){
         document.getElementById("keyboard").addEventListener("change", function (e) {
+            
             e.note[1] += key; //スクリーンキーボード用トランスポーズ
+
+            var ch = 0
+            if (isChCovnert){
+                ch = parseInt(document.getElementById("chconvertto").value);
+            }
             //console.log(e.note);
             //0: NoteOn/NoteOff 1: Note
-            Send([0x90, e.note[1], e.note[0] ? velocity : 0]);
+            
+            Send([0x90 + ch, e.note[1], e.note[0] ? velocity : 0]);
         });
     }
     
@@ -212,30 +221,31 @@ function Init(mode) {
 
     //初期化
 
-    setTimeout( function() {
-        //MIDI OUT
-        document.getElementById("midiout").options[0].selected = true;
-        var obj = document.getElementById("midiout");
-        var idx = obj.selectedIndex;
-        var val = obj.options[idx].value;
-        midiout = midiDevices.outputs[val];
-
-        //MIDI IN
-        document.getElementById("midiin").options[0].selected = true;
-        var obj = document.getElementById("midiin");
-        var idx = obj.selectedIndex;
-        var val = obj.options[idx].value;
-        midiin = midiDevices.inputs[val];
-
-        isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").checked);
-        isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").checked);
-        isChCovnert = Boolean(document.getElementById("chconvert").checked);
-        isSendCC = Boolean(document.getElementById("chconvert").checked);
-        velocity = parseInt(document.getElementById("velocityNum").value);
-        console.log('Initialized!');
-    }, 100 );
+    setTimeout( variable_refresh(), 100 );
     
+}
 
+function variable_refresh() {
+    //MIDI OUT
+    document.getElementById("midiout").options[0].selected = true;
+    var obj = document.getElementById("midiout");
+    var idx = obj.selectedIndex;
+    var val = obj.options[idx].value;
+    midiout = midiDevices.outputs[val];
+
+    //MIDI IN
+    document.getElementById("midiin").options[0].selected = true;
+    var obj = document.getElementById("midiin");
+    var idx = obj.selectedIndex;
+    var val = obj.options[idx].value;
+    midiin = midiDevices.inputs[val];
+
+    isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").checked);
+    isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").checked);
+    isChCovnert = Boolean(document.getElementById("chconvert").checked);
+    isSendCC = Boolean(document.getElementById("chconvert").checked);
+    velocity = parseInt(document.getElementById("velocityNum").value);
+    console.log('Initialized!');
 }
 
 function in_inputMonitor(mess) {

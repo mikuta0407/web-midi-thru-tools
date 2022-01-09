@@ -1,4 +1,4 @@
-# bower
+gi# bower
 bower_components/
 !bower_components/polymer/LICENSE.txt
 !bower_components/polymer/polymer.html
@@ -7,6 +7,8 @@ bower_components/
 !bower_components/webcomponentsjs/webcomponents-lite.min.js
 !2.0/bower_components/webcomponentsjs/webcomponents-lite.js
 
+# index.html
+index.html
 
 # Windows image file caches
 Thumbs.db

@@ -75,11 +75,14 @@
 </head>
 <body onload="Init('keyboard')">
 	<h1>MIDI Thru tools</h1>
+
+	<p><a href="nokeyboards.html">No Synth & Keyboard Version</a></p>
 	<webaudio-tinysynth id="synth"></webaudio-tinysynth>
 
     <br />
 	MidiIn : <select id="midiin"><option>none</option></select>
 	MidiOut : <select id="midiout"><option>none</option></select><br/>
+	<button onclick="variable_refresh()">Refresh</button><br>
 	MidiIn mute : <input type="checkbox" id="inputMIDIMuteToggle"><br />
 
 	<br>
