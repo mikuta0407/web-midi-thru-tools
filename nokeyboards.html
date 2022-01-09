@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MIDI Thru tools</title>
+<script src="keyboard.js"></script>
+<style>
+.key-minus {
+  appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: #d74646;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 16px;
+  min-width: 100px;
+  min-height: 40px;
+}
+
+.key-minus:hover {
+  background: #aa1d1d;
+}
+
+.key-minus:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px #cbd6ee;
+}
+
+.key-zero {
+  appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: #4bd746;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 16px;
+  min-width: 100px;
+  min-height: 40px;
+}
+
+.key-zero:hover {
+  background: #22aa1d;
+}
+
+.key-zero:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px #cbd6ee;
+}
+
+.key-plus {
+  appearance: none;
+  border: 0;
+  border-radius: 5px;
+  background: #4676D7;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 16px;
+  min-width: 100px;
+  min-height: 40px;
+}
+
+.key-plus:hover {
+  background: #1d49aa;
+}
+
+.key-plus:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px #cbd6ee;
+}
+	
+</style>
+</head>
+<body onload="Init()">
+	<h1>MIDI Thru tools</h1>
+
+    <br />
+	MidiIn : <select id="midiin"><option>none</option></select>
+	MidiOut : <select id="midiout"><option>none</option></select><br/>
+	MidiIn mute : <input type="checkbox" id="inputMIDIMuteToggle"><br />
+
+	<br>
+	Channel Convert to : 
+	<select name="chconvertto" id="chconvertto" >
+		<option value="0">1</option>
+		<option value="1">2</option>
+		<option value="2">3</option>
+		<option value="3">4</option>
+		<option value="4">5</option>
+		<option value="5">6</option>
+		<option value="6">7</option>
+		<option value="7">8</option>
+		<option value="8">9</option>
+		<option value="9">10</option>
+		<option value="10">11</option>
+		<option value="11">12</option>
+		<option value="12">13</option>
+		<option value="13">14</option>
+		<option value="14">15</option>
+		<option value="15">16</option>
+	</select>
+
+	Ch convert : <input type="checkbox" id="chconvert"><br />
+
+	Send CC : <input type="checkbox" id="sendcc" checked><br />
+
+	<!--Program : <webaudio-slider id="prog" min="0" max="127" direction="horz" valuetip="0"></webaudio-slider>
+	<webaudio-param link="prog"></webaudio-param><br/><br/> -->
+
+	<br>
+	Instrument: 
+	<select name="音色" id="progselector" >
+		<option value="1">1 Acostic Grand Piano</option>
+		<option value="2">2 Bright Acostic Piano</option>
+		<option value="3">3 Electric Grand Piano</option>
+		<option value="4">4 Honky-Tonk Piano</option>
+		<option value="5">5 Electric Piano 1</option>
+		<option value="6">6 Electric Piano 2</option>
+		<option value="7">7 Harpsicord</option>
+		<option value="8">8 Clavi</option>
+		<option value="9">9 Celesta</option>
+		<option value="10">10 Glockenspiel</option>
+		<option value="11">11 Music Box</option>
+		<option value="12">12 Vibraphone</option>
+		<option value="13">13 Marimba</option>
+		<option value="14">14 Xylophone</option>
+		<option value="15">15 Tubular Bells</option>
+		<option value="16">16 Dulcimer</option>
+		<option value="17">17 Drawber Organ</option>
+		<option value="18">18 Percussive Organ</option>
+		<option value="19">19 Rock Organ</option>
+		<option value="20">20 Church Organ</option>
+		<option value="21">21 Reed Organ</option>
+		<option value="22">22 Accordion</option>
+		<option value="23">23 Harmonica</option>
+		<option value="24">24 Tango Accordion</option>
+		<option value="25">25 Acostic Guitar (nylon)</option>
+		<option value="26">26 Acostic Guitar (steel)</option>
+		<option value="27">27 Electric Guitar (jazz)</option>
+		<option value="28">28 Electric Guitar (clean)</option>
+		<option value="29">29 Electric Guitar (muted)</option>
+		<option value="30">30 Overdriven Guitar</option>
+		<option value="31">31 Distortion Guitar</option>
+		<option value="32">32 Guitar Harmonics</option>
+		<option value="33">33 Acosic Bass</option>
+		<option value="34">34 Electric Bass (finger)</option>
+		<option value="35">35 Electric Bass (pick)</option>
+		<option value="36">36 Fretless Bass</option>
+		<option value="37">37 Slap Bass 1</option>
+		<option value="38">38 Slap Bass 2</option>
+		<option value="39">39 Synth Bass 1</option>
+		<option value="40">40 Synth Bass 2</option>
+		<option value="41">41 Violin</option>
+		<option value="42">42 Viola</option>
+		<option value="43">43 Cello</option>
+		<option value="44">44 Contrabass</option>
+		<option value="45">45 Tremoro Strings</option>
+		<option value="46">46 Pizzicato Strings</option>
+		<option value="47">47 Orchestral Harp</option>
+		<option value="48">48 Timpani</option>
+		<option value="49">49 String Ensamble 1</option>
+		<option value="50">50 String Ensamble 2</option>
+		<option value="51">51 Synth Strings 1</option>
+		<option value="52">52 Synth Strings 2</option>
+		<option value="53">53 Choir Aahs</option>
+		<option value="54">54 Voice Oohs</option>
+		<option value="55">55 Synth Voice</option>
+		<option value="56">56 Orchestra Hit</option>
+		<option value="57">57 Trumpet</option>
+		<option value="58">58 Trombone</option>
+		<option value="59">59 Tuba</option>
+		<option value="60">60 Muted Trumpet</option>
+		<option value="61">61 French Horn</option>
+		<option value="62">62 Brass Section</option>
+		<option value="63">63 Synth Brass 1</option>
+		<option value="64">64 Synth Brass 2</option>
+		<option value="65">65 Soprano Sax</option>
+		<option value="66">66 Alto Sax</option>
+		<option value="67">67 Tenor Sax</option>
+		<option value="68">68 Baritone Sax</option>
+		<option value="69">69 Oboe</option>
+		<option value="70">70 English Horn</option>
+		<option value="71">71 Bassoon</option>
+		<option value="72">72 Clarinet</option>
+		<option value="73">73 Piccolo</option>
+		<option value="74">74 Flute</option>
+		<option value="75">75 Recorder</option>
+		<option value="76">76 Pan Flute</option>
+		<option value="77">77 Bottle Blow</option>
+		<option value="78">78 Shakuhachi</option>
+		<option value="79">79 Whistle</option>
+		<option value="80">80 Ocarina</option>
+		<option value="81">81 Lead 1 (square)</option>
+		<option value="82">82 Lead 2 (sawtooth)</option>
+		<option value="83">83 Lead 3 (caliope)</option>
+		<option value="84">84 Lead 4 (chiff)</option>
+		<option value="85">85 Lead 5 (charang)</option>
+		<option value="86">86 Lead 6 (voice)</option>
+		<option value="87">87 Lead 7 (fifth)</option>
+		<option value="88">88 Lead 8 (bass+lead)</option>
+		<option value="89">89 Pad 1 (new age)</option>
+		<option value="90">90 Pad 2 (warm)</option>
+		<option value="91">91 Pad 3 (polysynth)</option>
+		<option value="92">92 Pad 4 (choir)</option>
+		<option value="93">93 Pad 5 (bowed)</option>
+		<option value="94">94 Pad 6 (metalic)</option>
+		<option value="95">95 Pad 7 (halo)</option>
+		<option value="96">96 Pad 8 (sweep)</option>
+		<option value="97">97 FX (rain)</option>
+		<option value="98">98 FX (soundtrack)</option>
+		<option value="99">99 FX (crystal)</option>
+		<option value="100">100 FX (atmosphere)</option>
+		<option value="101">101 FX (brightness)</option>
+		<option value="102">102 FX (goblins)</option>
+		<option value="103">103 FX (echoes)</option>
+		<option value="104">104 FX (sci-fi)</option>
+		<option value="105">105 Sitar</option>
+		<option value="106">106 Banjo</option>
+		<option value="107">107 Shamisen</option>
+		<option value="108">108 Koto</option>
+		<option value="109">109 Kalimba</option>
+		<option value="110">110 Bagpipe</option>
+		<option value="111">111 Fiddle</option>
+		<option value="112">112 Shanai</option>
+		<option value="113">113 Tinkle Bell</option>
+		<option value="114">114 Agogo</option>
+		<option value="115">115 Steel Drums</option>
+		<option value="116">116 Woodblock</option>
+		<option value="117">117 Taiko Drum</option>
+		<option value="118">118 Melodic Tom</option>
+		<option value="119">119 Synth Drum</option>
+		<option value="120">120 Reverse Cymbal</option>
+		<option value="121">121 Guitar Fret Noise</option>
+		<option value="122">122 Breath Noise</option>
+		<option value="123">123 Seashore</option>
+		<option value="124">124 Bird Tweet</option>
+		<option value="125">125 Telephone Ring</option>
+		<option value="126">126 Helicopter</option>
+		<option value="127">127 Applause</option>
+		<option value="128">128 Gun Shot</option>
+	</select>
+	<br>Channel Convertを使用していない場合、Ch01宛に送信されます
+	<br>If you are not using Channel Convert, it will be sent to Ch01
+	<br><br>
+	
+	Volume : <webaudio-knob id="volume" min="0" max="127" value="100" diameter="40"></webaudio-knob><br/><br/>
+	Velocity : <input id="velocityNum" type="number" name="velocity" value="64" min="1" max="100"> Velocity Fix : <input type="checkbox" id="inputVelocityFixToggle"><br /><br /><br />
+
+	CC Mode: 
+	<select name="CC Mode" id="ccmode">
+		<option value="1">1 Modulation Wheel</option>
+		<option value="2">2 Breath Controller</option>
+		<option value="3">3 After Touch</option>
+		<option value="4">4 Foot Controller</option>
+		<option value="5">5 Portamento Time</option>
+		<option value="6">6 Data Entry</option>
+		<option value="7" selected>7 Main Volume</option>
+		<option value="64">64 Damper Pedal</option>
+		<option value="65">65 Portamento</option>
+		<option value="66">66 Sostenuto</option>
+		<option value="67">67 Soft Pedal</option>
+		<option value="93">93 Chorus</option>
+		<option value="94">94 Celeste</option>
+		<option value="95">95 Phaser</option>
+		<option value="96">96 Data Entry + 1</option>
+		<option value="97">97 Data Entry - 1</option>
+		<option value="122">122 Local Control</option>
+		<option value="123">123 All Notes Off</option>
+		<option value="124">124 Omni Mode off</option>
+		<option value="125">125 Omni Mode on</option>
+		<option value="126">126 Mono on/Poly off</option>
+		<option value="127">127 Poly on/Mono off</option>
+	</select>
+
+	<br /><br />
+
+	Octave<br />
+
+	<div id="nowoctave">Now oct : <b>0</b></div>
+
+	<div>
+		<button onclick="octave(-1)" class="key-minus">-</button> 
+		<button onclick="octave(0)" class="key-zero">0</button> 
+		<button onclick="octave(1)" class="key-plus">+</button> 
+	</div>
+
+	Transpose<br />
+
+	<div id="nowkey">Now key : <b>0, C</b></div>
+
+	<div>
+		<button onclick="transpose(-12)" class="key-minus">-12 C</button>
+		<button onclick="transpose(-11)" class="key-minus">-11 C♯/D♭</button>
+		<button onclick="transpose(-10)" class="key-minus">-10 D</button>
+		<button onclick="transpose(-9)" class="key-minus">-9 D♯/E♭</button>
+		<button onclick="transpose(-8)" class="key-minus">-8 E</button>
+		<button onclick="transpose(-7)" class="key-minus">-7 F</button>
+		<button onclick="transpose(-6)" class="key-minus">-6 F♯/G♭</button>
+		<button onclick="transpose(-5)" class="key-minus">-5 G</button>
+		<button onclick="transpose(-4)" class="key-minus">-4 G♯/A♭</button>
+		<button onclick="transpose(-3)" class="key-minus">-3 A</button>
+		<button onclick="transpose(-2)" class="key-minus">-2 A♯/B♭</button>
+		<button onclick="transpose(-1)" class="key-minus">-1 B</button>
+		<br><br>
+		<button onclick="transpose(0)" class="key-zero">0 C</button>
+		<br><br>
+		<button onclick="transpose(1)" class="key-plus">1 C♯/D♭</button>
+		<button onclick="transpose(2)" class="key-plus">2 D</button>
+		<button onclick="transpose(3)" class="key-plus">3 D♯/E♭</button>
+		<button onclick="transpose(4)" class="key-plus">4 E</button>
+		<button onclick="transpose(5)" class="key-plus">5 F</button>
+		<button onclick="transpose(6)" class="key-plus">6 F♯/G♭</button>
+		<button onclick="transpose(7)" class="key-plus">7 G</button>
+		<button onclick="transpose(8)" class="key-plus">8 G♯/A♭</button>
+		<button onclick="transpose(9)" class="key-plus">9 A</button>
+		<button onclick="transpose(10)" class="key-plus">10 A♯/B♭</button>
+		<button onclick="transpose(11)" class="key-plus">11 B</button>
+		<button onclick="transpose(12)" class="key-plus">12 C</button>
+	</div>
+	<br>
+
+	Reset<br />
+	<button onclick="gm1systemon()">GM Reset</button><br>
+	<button onclick="gsreset()">GS Reset</button><br>
+	<button onclick="xgsystemon()">XG Reset</button><br><br>
+
+
+	sysEx send area<br />
+	<textarea id="sysExInputArea" name="sysExArea" value="1" cols="50" rows="5" maxlength="50"></textarea><br />
+	<button onclick="sendSysEx()">send sysEX</button><br /><br />
+
+	input monitor<br />
+	<textarea id="inmonitor" name="indataMonitorArea" value="1" cols="50" rows="20" maxlength="15" readonly="true"
+		STYLE="color:#FFFFFF;background-color:#404040"></textarea><br />
+	
+	output monitor<br />
+	<textarea id="outmonitor" name="outdatamonitorArea" value="1" cols="50" rows="20" maxlength="15" readonly="true"
+		STYLE="color:#FFFFFF;background-color:#404040"></textarea>
+
+</body>
+</html>
