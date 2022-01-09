@@ -13,6 +13,8 @@ var isSendCC = true;
 var key = 0; //mikuta0407 created
 var oct = 0;
 
+var scrkey = true;
+
 var keyarr =["C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C","C♯/D♭","D","D♯/E♭","E","F","F♯/G♭","G","G♯/A♭","A","A♯/B♭","B","C"]; //mikuta0407 created
 
 //mikuta0407 edited
@@ -23,13 +25,16 @@ function inputEvent(e) {
     var device = midiDevices.inputs[target.name];
 
        
-    var numArray = [];
+    var numArray = [];  
     
     if (device != midiin)
     {
         console.log("not selected");
         return; /* not selected device. throw away data  */
     }
+
+    //console.log(device);
+    //console.log(midiin);
 
     // to hex
     event.data.forEach(function (val) {
@@ -128,6 +133,10 @@ function scb(midiaccess) {
 
 function Init(mode) {
 
+    if (mode == "nokeyboard"){
+        scrkey = false;
+    }
+
     console.log("Hello");
 
     if (navigator.requestMIDIAccess) {
@@ -140,6 +149,8 @@ function Init(mode) {
 
     velocity = 64;
     
+    //EventListener貼り付け
+
     document.getElementById("midiout").addEventListener("change", function (e) {
         var obj = document.getElementById("midiout");
         var idx = obj.selectedIndex;
@@ -175,7 +186,7 @@ function Init(mode) {
         velocity = parseInt(document.getElementById("velocityNum").value);
     });
 
-    if (mode == "keyboard"){
+    if (scrkey){
         document.getElementById("keyboard").addEventListener("change", function (e) {
             e.note[1] += key; //スクリーンキーボード用トランスポーズ
             //console.log(e.note);
@@ -184,10 +195,6 @@ function Init(mode) {
         });
     }
     
-    //document.getElementById("prog").addEventListener("change", function (e) {
-    //    Send([0xc0, e.target.value]);
-    //});
-
     document.getElementById("progselector").addEventListener("change", function (e) {
 
         if (isChCovnert){
@@ -201,6 +208,34 @@ function Init(mode) {
     document.getElementById("volume").addEventListener("change", function (e) {
         Send([0xb0, 7, e.target.value]);
     });
+
+
+    //初期化
+
+    setTimeout( function() {
+        //MIDI OUT
+        document.getElementById("midiout").options[0].selected = true;
+        var obj = document.getElementById("midiout");
+        var idx = obj.selectedIndex;
+        var val = obj.options[idx].value;
+        midiout = midiDevices.outputs[val];
+
+        //MIDI IN
+        document.getElementById("midiin").options[0].selected = true;
+        var obj = document.getElementById("midiin");
+        var idx = obj.selectedIndex;
+        var val = obj.options[idx].value;
+        midiin = midiDevices.inputs[val];
+
+        isMidiMute = Boolean(document.getElementById("inputMIDIMuteToggle").checked);
+        isVelFix = Boolean(document.getElementById("inputVelocityFixToggle").checked);
+        isChCovnert = Boolean(document.getElementById("chconvert").checked);
+        isSendCC = Boolean(document.getElementById("chconvert").checked);
+        velocity = parseInt(document.getElementById("velocityNum").value);
+        console.log('Initialized!');
+    }, 100 );
+    
+
 }
 
 function in_inputMonitor(mess) {
@@ -238,7 +273,9 @@ function Send(mess) {
     }
     
     // output to midi sequencer
-    document.getElementById("synth").send(mess);
+    if (scrkey){
+        document.getElementById("synth").send(mess);
+    }
     
     out_outputMonitor(mess);
 }
